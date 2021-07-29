@@ -5,7 +5,7 @@ using SwitchSysHidplusClient.Enums;
 namespace SwitchSysHidplusClient
 {
     // Some code taken from: https://stackoverflow.com/questions/39109609/how-to-use-xbox-one-controller-in-c-sharp-application
-    class XInputController
+    class XInputController : IDisposable
     {
         private Controller controller;
         private Gamepad gamepad;
@@ -28,21 +28,21 @@ namespace SwitchSysHidplusClient
             // Timer setup
             timer.Period = 2;
             timer.Resolution = 1;
-            timer.Tick += (source, e) =>
-            {
-                Update();
-                /*var controllerUpdateThread = new Thread(() =>
-                {
-
-                });*/
-            };
+            timer.Tick += Update;
             timer.Start();
         }
 
-        ~XInputController()
-            => timer.Stop();
+        public void Dispose()
+        {
+            timer.Stop();
+            timer.Tick -= Update;
+            timer.Dispose();
+        }
 
-        public void Update()
+        ~XInputController()
+            => Dispose();
+
+        private void Update(object source, EventArgs e)
         {
             if (!Connected)
                 return;

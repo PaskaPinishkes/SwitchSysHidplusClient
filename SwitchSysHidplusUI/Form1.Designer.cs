@@ -56,7 +56,7 @@ namespace SwitchSysHidplusUI
             this.ipTextBox.Name = "ipTextBox";
             this.ipTextBox.Size = new System.Drawing.Size(182, 23);
             this.ipTextBox.TabIndex = 1;
-            this.ipTextBox.Text = "192.168.100.25";
+            this.ipTextBox.Text = "192.168.0.1";
             // 
             // label1
             // 
