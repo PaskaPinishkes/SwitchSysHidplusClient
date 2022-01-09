@@ -21,7 +21,7 @@ namespace SwitchSysHidplusClient
         private static IPAddress switchIP = IPAddress.Parse("0.0.0.0");
         private static IPEndPoint ep = new IPEndPoint(switchIP, 8000);
 
-        private static XInputController[] controllers = new XInputController[4] {
+        public static XInputController[] controllers = new XInputController[4] {
             new XInputController(UserIndex.One),
             new XInputController(UserIndex.Two),
             new XInputController(UserIndex.Three),

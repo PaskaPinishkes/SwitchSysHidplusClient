@@ -5,12 +5,14 @@ using SwitchSysHidplusClient.Enums;
 namespace SwitchSysHidplusClient
 {
     // Some code taken from: https://stackoverflow.com/questions/39109609/how-to-use-xbox-one-controller-in-c-sharp-application
-    class XInputController : IDisposable
+    public class XInputController : IDisposable
     {
         private Controller controller;
         private Gamepad gamepad;
         private bool leftTrigger, rightTrigger;
         private Multimedia.Timer timer = new Multimedia.Timer();
+
+        public int layoutStyle { get; set; }
 
         public bool Connected { 
             get { return controller.IsConnected; }
@@ -74,18 +76,38 @@ namespace SwitchSysHidplusClient
             Buttons = 0;
 
             // "Main" buttons:
-            // A/B and X/Y are inverted :b
-            if ((gamepad.Buttons & GamepadButtonFlags.A) == GamepadButtonFlags.A)
-                Buttons |= (ulong)SwitchButtons.B;
+            // A/B and X/Y are inverted, in the normal switch layout
 
-            if ((gamepad.Buttons & GamepadButtonFlags.B) == GamepadButtonFlags.B)
-                Buttons |= (ulong)SwitchButtons.A;
+            if(layoutStyle == 0)
+            {
+                if ((gamepad.Buttons & GamepadButtonFlags.A) == GamepadButtonFlags.A)
+                    Buttons |= (ulong)SwitchButtons.B;
 
-            if ((gamepad.Buttons & GamepadButtonFlags.X) == GamepadButtonFlags.X)
-                Buttons |= (ulong)SwitchButtons.Y;
+                if ((gamepad.Buttons & GamepadButtonFlags.B) == GamepadButtonFlags.B)
+                    Buttons |= (ulong)SwitchButtons.A;
 
-            if ((gamepad.Buttons & GamepadButtonFlags.Y) == GamepadButtonFlags.Y)
-                Buttons |= (ulong)SwitchButtons.X;
+                if ((gamepad.Buttons & GamepadButtonFlags.X) == GamepadButtonFlags.X)
+                    Buttons |= (ulong)SwitchButtons.Y;
+
+                if ((gamepad.Buttons & GamepadButtonFlags.Y) == GamepadButtonFlags.Y)
+                    Buttons |= (ulong)SwitchButtons.X;
+            }
+            
+            //In the xbox layout, buttons are not inverted
+            else if(layoutStyle == 1)
+            {
+                if ((gamepad.Buttons & GamepadButtonFlags.A) == GamepadButtonFlags.A)
+                    Buttons |= (ulong)SwitchButtons.A;
+
+                if ((gamepad.Buttons & GamepadButtonFlags.B) == GamepadButtonFlags.B)
+                    Buttons |= (ulong)SwitchButtons.B;
+
+                if ((gamepad.Buttons & GamepadButtonFlags.X) == GamepadButtonFlags.X)
+                    Buttons |= (ulong)SwitchButtons.X;
+
+                if ((gamepad.Buttons & GamepadButtonFlags.Y) == GamepadButtonFlags.Y)
+                    Buttons |= (ulong)SwitchButtons.Y;
+            }
 
             
             // Sticks (not the positions, whether they are clicked or not)
